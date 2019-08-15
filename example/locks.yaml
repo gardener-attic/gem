@@ -1,0 +1,29 @@
+# Copyright 2019 SAP SE or an SAP affiliate company. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: gem.gardener.cloud/v1alpha1
+kind: Locks
+locks:
+- hash: 9c0d8c5801c3e7a8165b8983eeea1ca95243aecc
+  name: github.com/gardener/gardener-extensions/controllers/provider-aws/example
+  resolved:
+    revision: 9c0d8c5801c3e7a8165b8983eeea1ca95243aecc
+- hash: 55fd41b81863d0642dd53092f19a5e8a890671ca
+  name: github.com/gardener/gardener-extensions/controllers/provider-azure/example
+  resolved:
+    version: 0.6.2
+- hash: de024fbf5602e43dd9ca400a93a17113ba893842
+  name: github.com/gardener/gardener-extensions/controllers/provider-gcp/example
+  resolved:
+    version: 0.6.6
