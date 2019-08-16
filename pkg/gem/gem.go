@@ -16,6 +16,7 @@ package gem
 
 import (
 	"fmt"
+	"github.com/blang/semver"
 	"path/filepath"
 
 	"github.com/sirupsen/logrus"
@@ -93,7 +94,7 @@ func NewRepositoryInterface(targetSolver TargetSolver, repository Repository) Re
 	return &repositoryInterface{targetSolver, repository}
 }
 
-func (r *repositoryInterface) SolveTarget(target *gemapi.Target) (*gemapi.Lock, error) {
+func (r *repositoryInterface) SolveTarget(target gemapi.Target) (*gemapi.Lock, error) {
 	return r.targetSolver.Solve(target)
 }
 
@@ -110,7 +111,7 @@ func (r *repositoryInterface) Verify(submodule string, requirement *gemapi.Requi
 }
 
 func (r *repositoryInterface) Solve(submodule string, requirement *gemapi.Requirement) (*gemapi.Lock, error) {
-	lock, err := r.SolveTarget(&requirement.Target)
+	lock, err := r.SolveTarget(requirement.Target)
 	if err != nil {
 		return nil, err
 	}
@@ -121,14 +122,33 @@ func (r *repositoryInterface) Solve(submodule string, requirement *gemapi.Requir
 	return lock, nil
 }
 
+func isRequirementSatisfiedByLock(requirement *gemapi.Requirement, lock *gemapi.Lock) bool {
+	if requirement.Target.Type != gemapi.Version || lock.Resolved.Type != gemapi.Version {
+		return requirement.Target == lock.Target
+	}
+
+	newRange, err := semver.ParseRange(requirement.Target.Version)
+	if err != nil {
+		return false
+	}
+
+	oldVersion, err := semver.Parse(lock.Resolved.Version)
+	if err != nil {
+		return false
+	}
+
+	return newRange(oldVersion)
+}
+
 func (r *repositoryInterface) Ensure(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock, update bool) (*gemapi.Lock, error) {
-	if lock == nil || update || requirement.Target != lock.Target {
+	if lock == nil || update || !isRequirementSatisfiedByLock(requirement, lock) {
 		var err error
-		lock, err = r.SolveTarget(&requirement.Target)
+		lock, err = r.SolveTarget(requirement.Target)
 		if err != nil {
 			return nil, err
 		}
 	}
+	lock.Target = requirement.Target
 
 	if err := r.Verify(submodule, requirement, lock); err != nil {
 		return nil, err
@@ -262,8 +282,10 @@ func (g *gem) Ensure(requirements *gemapi.Requirements, locks *gemapi.Locks, upd
 		var oldLock *gemapi.Lock
 		if locks != nil {
 			oldLock = locks.Locks[moduleKey]
-			log = withLockLogger(log, oldLock)
-			log.Debug("Old lock found")
+			if oldLock != nil {
+				log = withLockLogger(log, oldLock)
+				log.Debug("Old lock found")
+			}
 		}
 
 		log.Debug("Ensuring requirement with optional lock")

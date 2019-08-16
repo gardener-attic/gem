@@ -40,7 +40,7 @@ type Repository interface {
 }
 
 type TargetSolver interface {
-	Solve(target *gemapi.Target) (*gemapi.Lock, error)
+	Solve(target gemapi.Target) (*gemapi.Lock, error)
 }
 
 type TargetSolverFactory interface {
@@ -58,7 +58,7 @@ type UpdatePolicy interface {
 }
 
 type RepositoryInterface interface {
-	SolveTarget(target *gemapi.Target) (*gemapi.Lock, error)
+	SolveTarget(target gemapi.Target) (*gemapi.Lock, error)
 	Verify(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock) error
 	Solve(submodule string, requirement *gemapi.Requirement) (*gemapi.Lock, error)
 	Ensure(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock, update bool) (*gemapi.Lock, error)
