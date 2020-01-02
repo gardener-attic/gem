@@ -1,4 +1,4 @@
-// Copyright 2019 SAP SE or an SAP affiliate company. All rights reserved.
+// Copyright 2020 SAP SE or an SAP affiliate company. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import (
 
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
 
-	"github.com/blang/semver"
+	"github.com/masterminds/semver"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/storage/memory"
@@ -85,13 +85,13 @@ func (g *gitRepository) Versions() ([]RepositoryVersion, error) {
 	var versions []RepositoryVersion
 	if err := tags.ForEach(func(ref *plumbing.Reference) error {
 		name := ref.Name().Short()
-		r, err := semver.Parse(name)
+		r, err := semver.NewVersion(name)
 		if err != nil {
 			return nil
 		}
 
 		versions = append(versions, RepositoryVersion{
-			Version: r,
+			Version: *r,
 			Name:    name,
 			Hash:    ref.Hash().String(),
 		})

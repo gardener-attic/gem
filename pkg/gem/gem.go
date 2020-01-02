@@ -1,4 +1,4 @@
-// Copyright 2019 SAP SE or an SAP affiliate company. All rights reserved.
+// Copyright 2020 SAP SE or an SAP affiliate company. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@ package gem
 
 import (
 	"fmt"
-	"github.com/blang/semver"
 	"path/filepath"
+
+	"github.com/masterminds/semver"
 
 	"github.com/sirupsen/logrus"
 
@@ -127,17 +128,17 @@ func isRequirementSatisfiedByLock(requirement *gemapi.Requirement, lock *gemapi.
 		return requirement.Target == lock.Target
 	}
 
-	newRange, err := semver.ParseRange(requirement.Target.Version)
+	newRange, err := semver.NewConstraint(requirement.Target.Version)
 	if err != nil {
 		return false
 	}
 
-	oldVersion, err := semver.Parse(lock.Resolved.Version)
+	oldVersion, err := semver.NewVersion(lock.Resolved.Version)
 	if err != nil {
 		return false
 	}
 
-	return newRange(oldVersion)
+	return newRange.Check(oldVersion)
 }
 
 func (r *repositoryInterface) Ensure(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock, update bool) (*gemapi.Lock, error) {

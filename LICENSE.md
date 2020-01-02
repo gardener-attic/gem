@@ -212,10 +212,10 @@ This project includes the following subcomponents that are subject to separate l
 Your use of these subcomponents is subject to the separate license terms applicable to
 each subcomponent.
 
-github.com/blang/semver   
-https://github.com/blang/semver   
-Copyright (c) 2014 Benedikt Lang   
-MIT (https:/github.com/blang/semver/blob/master/LICENSE)
+github.com/masterminds/semver   
+https://github.com/Masterminds/semver.  
+Copyright (C) 2014-2015, Matt Butcher and Matt Farina  
+MIT license (https://github.com/Masterminds/semver/blob/master/LICENSE.txt)
 
 github.com/gardener/gardener   
 https://github.com/gardener/gardener   
