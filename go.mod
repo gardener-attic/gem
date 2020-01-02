@@ -1,11 +1,11 @@
 module github.com/gardener/gem
 
-go 1.12
+go 1.13
 
 require (
-	github.com/blang/semver v3.5.1+incompatible
 	github.com/gardener/gardener v0.0.0-20190805161558-1c06a3089147
 	github.com/google/addlicense v0.0.0-20190510175307-22550fa7c1b0
+	github.com/masterminds/semver v1.5.0
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5

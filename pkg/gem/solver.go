@@ -1,4 +1,4 @@
-// Copyright 2019 SAP SE or an SAP affiliate company. All rights reserved.
+// Copyright 2020 SAP SE or an SAP affiliate company. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package gem
 import (
 	"fmt"
 
-	"github.com/blang/semver"
+	"github.com/masterminds/semver"
 
 	gemapi "github.com/gardener/gem/pkg/gem/api"
 )
@@ -31,14 +31,14 @@ func NewSolver(repo Repository) TargetSolver {
 }
 
 func (s *solver) bestVersion(versionRange string, versions []RepositoryVersion) (*RepositoryVersion, error) {
-	r, err := semver.ParseRange(versionRange)
+	r, err := semver.NewConstraint(versionRange)
 	if err != nil {
 		return nil, err
 	}
 
 	var best *RepositoryVersion
 	for _, version := range versions {
-		if r(version.Version) && (best == nil || version.Version.GT(best.Version)) {
+		if r.Check(&version.Version) && (best == nil || version.Version.GreaterThan(&best.Version)) {
 			v := version
 			best = &v
 		}

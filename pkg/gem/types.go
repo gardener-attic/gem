@@ -1,4 +1,4 @@
-// Copyright 2019 SAP SE or an SAP affiliate company. All rights reserved.
+// Copyright 2020 SAP SE or an SAP affiliate company. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
 package gem
 
 import (
-	"github.com/blang/semver"
 	gardencorev1alpha1 "github.com/gardener/gardener/pkg/apis/core/v1alpha1"
 	gemapi "github.com/gardener/gem/pkg/gem/api"
+	"github.com/masterminds/semver"
 )
 
 type RepositoryRegistry interface {
