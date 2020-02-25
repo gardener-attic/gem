@@ -19,7 +19,7 @@ import (
 
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
 
-	"github.com/masterminds/semver"
+	"github.com/Masterminds/semver"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/storage/memory"

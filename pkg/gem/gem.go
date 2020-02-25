@@ -18,13 +18,13 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/masterminds/semver"
+	"github.com/Masterminds/semver"
 
 	"github.com/sirupsen/logrus"
 
 	"github.com/pkg/errors"
 
-	gardencorev1alpha1 "github.com/gardener/gardener/pkg/apis/core/v1alpha1"
+	gardencorev1beta1 "github.com/gardener/gardener/pkg/apis/core/v1beta1"
 
 	gemapi "github.com/gardener/gem/pkg/gem/api"
 )
@@ -157,7 +157,7 @@ func (r *repositoryInterface) Ensure(submodule string, requirement *gemapi.Requi
 	return lock, nil
 }
 
-func (r *repositoryInterface) Fetch(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock) (*gardencorev1alpha1.ControllerRegistration, error) {
+func (r *repositoryInterface) Fetch(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock) (*gardencorev1beta1.ControllerRegistration, error) {
 	path := optSubmodulePath(submodule, requirement.Filename)
 	data, err := r.repository.File(lock.Hash, path)
 	if err != nil {
@@ -234,8 +234,8 @@ func (g *gem) Solve(requirements *gemapi.Requirements) (*gemapi.Locks, error) {
 	return &gemapi.Locks{Locks: locks}, nil
 }
 
-func (g *gem) Fetch(requirements *gemapi.Requirements, locks *gemapi.Locks) ([]*gardencorev1alpha1.ControllerRegistration, error) {
-	var registrations []*gardencorev1alpha1.ControllerRegistration
+func (g *gem) Fetch(requirements *gemapi.Requirements, locks *gemapi.Locks) ([]*gardencorev1beta1.ControllerRegistration, error) {
+	var registrations []*gardencorev1beta1.ControllerRegistration
 
 	for moduleKey, requirement := range requirements.Requirements {
 		log := withModuleKeyRequirementLogger(g.log, moduleKey, requirement)
