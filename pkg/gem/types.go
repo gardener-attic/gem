@@ -15,9 +15,9 @@
 package gem
 
 import (
-	gardencorev1alpha1 "github.com/gardener/gardener/pkg/apis/core/v1alpha1"
+	"github.com/Masterminds/semver"
+	gardencorev1beta1 "github.com/gardener/gardener/pkg/apis/core/v1beta1"
 	gemapi "github.com/gardener/gem/pkg/gem/api"
-	"github.com/masterminds/semver"
 )
 
 type RepositoryRegistry interface {
@@ -62,12 +62,12 @@ type RepositoryInterface interface {
 	Verify(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock) error
 	Solve(submodule string, requirement *gemapi.Requirement) (*gemapi.Lock, error)
 	Ensure(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock, update bool) (*gemapi.Lock, error)
-	Fetch(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock) (*gardencorev1alpha1.ControllerRegistration, error)
+	Fetch(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock) (*gardencorev1beta1.ControllerRegistration, error)
 }
 
 type Interface interface {
 	Repository(repositoryName string) (RepositoryInterface, error)
 	Solve(requirements *gemapi.Requirements) (*gemapi.Locks, error)
-	Fetch(requirements *gemapi.Requirements, locks *gemapi.Locks) ([]*gardencorev1alpha1.ControllerRegistration, error)
+	Fetch(requirements *gemapi.Requirements, locks *gemapi.Locks) ([]*gardencorev1beta1.ControllerRegistration, error)
 	Ensure(requirements *gemapi.Requirements, locks *gemapi.Locks, updatePolicy UpdatePolicy) (*gemapi.Locks, error)
 }

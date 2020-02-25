@@ -16,7 +16,7 @@ package gem
 
 import (
 	gardencoreinstall "github.com/gardener/gardener/pkg/apis/core/install"
-	gardencorev1alpha1 "github.com/gardener/gardener/pkg/apis/core/v1alpha1"
+	gardencorev1beta1 "github.com/gardener/gardener/pkg/apis/core/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 	"k8s.io/apimachinery/pkg/runtime/serializer/versioning"
@@ -32,12 +32,12 @@ func init() {
 		scheme,
 		serializer,
 		serializer,
-		gardencorev1alpha1.SchemeGroupVersion,
-		gardencorev1alpha1.SchemeGroupVersion)
+		gardencorev1beta1.SchemeGroupVersion,
+		gardencorev1beta1.SchemeGroupVersion)
 }
 
-func LoadControllerRegistration(data []byte) (*gardencorev1alpha1.ControllerRegistration, error) {
-	registration := &gardencorev1alpha1.ControllerRegistration{}
+func LoadControllerRegistration(data []byte) (*gardencorev1beta1.ControllerRegistration, error) {
+	registration := &gardencorev1beta1.ControllerRegistration{}
 	if err := runtime.DecodeInto(GardenCoreCodec, data, registration); err != nil {
 		return nil, err
 	}

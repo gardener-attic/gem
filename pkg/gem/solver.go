@@ -17,7 +17,7 @@ package gem
 import (
 	"fmt"
 
-	"github.com/masterminds/semver"
+	"github.com/Masterminds/semver"
 
 	gemapi "github.com/gardener/gem/pkg/gem/api"
 )
