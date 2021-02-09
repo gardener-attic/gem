@@ -248,37 +248,114 @@ func Convert_gem_Locks_To_v1alpha1_Locks(in *api.Locks, out *Locks, s conversion
 }
 
 func Convert_v1alpha1_Lock_To_gem_Lock(in *Lock, out *api.Lock, s conversion.Scope) error {
-	return s.DefaultConvert(in, out, conversion.IgnoreMissingFields)
+	if err := s.Convert(&in.Target, &out.Target, 0); err != nil {
+		return err
+	}
+	if err := s.Convert(&in.Resolved, &out.Resolved, 0); err != nil {
+		return err
+	}
+	out.Hash = in.Hash
+	return nil
 }
 
 func Convert_gem_Lock_To_v1alpha1_Lock(in *api.Lock, out *Lock, s conversion.Scope) error {
-	return s.DefaultConvert(in, out, conversion.IgnoreMissingFields)
+	if err := s.Convert(&in.Target, &out.Target, 0); err != nil {
+		return err
+	}
+	if err := s.Convert(&in.Resolved, &out.Resolved, 0); err != nil {
+		return err
+	}
+	out.Hash = in.Hash
+	return nil
 }
 
 func addConversionFuncs(scheme *runtime.Scheme) error {
-	return scheme.AddConversionFuncs(
-		// target
-		Convert_v1alpha1_Target_To_gem_Target,
-		Convert_gem_Target_To_v1alpha1_Target,
+	// target
+	if err := scheme.AddConversionFunc((*Target)(nil), (*api.Target)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_Target_To_gem_Target(a.(*Target), b.(*api.Target), scope)
+	}); err != nil {
+		return err
+	}
 
-		// requirements
-		Convert_v1alpha1_Requirement_To_gem_Requirement,
-		Convert_gem_Requirement_To_v1alpha1_Requirement,
+	if err := scheme.AddConversionFunc((*api.Target)(nil), (*Target)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_gem_Target_To_v1alpha1_Target(a.(*api.Target), b.(*Target), scope)
+	}); err != nil {
+		return err
+	}
 
-		Convert_v1alpha1_NamedRequirements_To_gem_ModuleKeyToRequirement,
-		Convert_gem_ModuleKeyToRequirement_To_v1alpha1_NamedRequirements,
+	// requirements
+	if err := scheme.AddConversionFunc((*Requirement)(nil), (*api.Requirement)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_Requirement_To_gem_Requirement(a.(*Requirement), b.(*api.Requirement), scope)
+	}); err != nil {
+		return err
+	}
 
-		Convert_v1alpha1_Requirements_To_gem_Requirements,
-		Convert_gem_Requirements_To_v1alpha1_Requirements,
+	if err := scheme.AddConversionFunc((*api.Requirement)(nil), (*Requirement)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_gem_Requirement_To_v1alpha1_Requirement(a.(*api.Requirement), b.(*Requirement), scope)
+	}); err != nil {
+		return err
+	}
 
-		// locks
-		Convert_v1alpha1_Lock_To_gem_Lock,
-		Convert_gem_Lock_To_v1alpha1_Lock,
+	if err := scheme.AddConversionFunc((*[]NamedRequirement)(nil), (*map[api.ModuleKey]*api.Requirement)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_NamedRequirements_To_gem_ModuleKeyToRequirement(a.(*[]NamedRequirement), b.(*map[api.ModuleKey]*api.Requirement), scope)
+	}); err != nil {
+		return err
+	}
 
-		Convert_v1alpha1_NamedTargetLock_To_gem_ModuleKeyToLock,
-		Convert_gem_ModuleKeyToLock_To_v1alpha1_NamedTargetLocks,
+	if err := scheme.AddConversionFunc((*map[api.ModuleKey]*api.Requirement)(nil), (*[]NamedRequirement)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_gem_ModuleKeyToRequirement_To_v1alpha1_NamedRequirements(a.(*map[api.ModuleKey]*api.Requirement), b.(*[]NamedRequirement), scope)
+	}); err != nil {
+		return err
+	}
 
-		Convert_v1alpha1_Locks_To_gem_Locks,
-		Convert_gem_Locks_To_v1alpha1_Locks,
-	)
+	if err := scheme.AddConversionFunc((*Requirements)(nil), (*api.Requirements)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_Requirements_To_gem_Requirements(a.(*Requirements), b.(*api.Requirements), scope)
+	}); err != nil {
+		return err
+	}
+
+	if err := scheme.AddConversionFunc((*api.Requirements)(nil), (*Requirements)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_gem_Requirements_To_v1alpha1_Requirements(a.(*api.Requirements), b.(*Requirements), scope)
+	}); err != nil {
+		return err
+	}
+
+	// locks
+	if err := scheme.AddConversionFunc((*Lock)(nil), (*api.Lock)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_Lock_To_gem_Lock(a.(*Lock), b.(*api.Lock), scope)
+	}); err != nil {
+		return err
+	}
+
+	if err := scheme.AddConversionFunc((*api.Lock)(nil), (*Lock)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_gem_Lock_To_v1alpha1_Lock(a.(*api.Lock), b.(*Lock), scope)
+	}); err != nil {
+		return err
+	}
+
+	if err := scheme.AddConversionFunc((*[]NamedLock)(nil), (*map[api.ModuleKey]*api.Lock)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_NamedTargetLock_To_gem_ModuleKeyToLock(a.(*[]NamedLock), b.(*map[api.ModuleKey]*api.Lock), scope)
+	}); err != nil {
+		return err
+	}
+
+	if err := scheme.AddConversionFunc((*map[api.ModuleKey]*api.Lock)(nil), (*[]NamedLock)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_gem_ModuleKeyToLock_To_v1alpha1_NamedTargetLocks(a.(*map[api.ModuleKey]*api.Lock), b.(*[]NamedLock), scope)
+	}); err != nil {
+		return err
+	}
+
+	if err := scheme.AddConversionFunc((*Locks)(nil), (*api.Locks)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_Locks_To_gem_Locks(a.(*Locks), b.(*api.Locks), scope)
+	}); err != nil {
+		return err
+	}
+
+	if err := scheme.AddConversionFunc((*api.Locks)(nil), (*Locks)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_gem_Locks_To_v1alpha1_Locks(a.(*api.Locks), b.(*Locks), scope)
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }
