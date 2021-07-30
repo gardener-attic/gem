@@ -40,10 +40,9 @@ func init() {
 }
 
 func LoadControllerRegistration(r io.Reader) ([]runtime.Object, error) {
-
 	var list []runtime.Object
-
 	d := yaml.NewYAMLToJSONDecoder(r)
+
 	ext := runtime.RawExtension{}
 	err := d.Decode(&ext)
 	if err != nil {
@@ -56,15 +55,19 @@ func LoadControllerRegistration(r io.Reader) ([]runtime.Object, error) {
 	list = append(list, obj)
 
 	err = d.Decode(&ext)
-	if err != nil && err != io.EOF {
-		return nil, err
-	} else {
-		obj, _, err = unstructured.UnstructuredJSONScheme.Decode(ext.Raw, nil, nil)
-		if err != nil {
+	if err != nil {
+		if err == io.EOF {
+			return list, nil // compatibility mode: only one object is present in the controller-registration.yaml
+		} else {
 			return nil, err
 		}
-		list = append(list, obj)
 	}
+
+	obj, _, err = unstructured.UnstructuredJSONScheme.Decode(ext.Raw, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	list = append(list, obj)
 
 	return list, nil
 }
