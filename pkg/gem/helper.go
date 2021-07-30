@@ -17,9 +17,12 @@ package gem
 import (
 	gardencoreinstall "github.com/gardener/gardener/pkg/apis/core/install"
 	gardencorev1beta1 "github.com/gardener/gardener/pkg/apis/core/v1beta1"
+	"io"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 	"k8s.io/apimachinery/pkg/runtime/serializer/versioning"
+	"k8s.io/apimachinery/pkg/util/yaml"
 )
 
 var GardenCoreCodec runtime.Codec
@@ -36,11 +39,32 @@ func init() {
 		gardencorev1beta1.SchemeGroupVersion)
 }
 
-func LoadControllerRegistration(data []byte) (*gardencorev1beta1.ControllerRegistration, error) {
-	registration := &gardencorev1beta1.ControllerRegistration{}
-	if err := runtime.DecodeInto(GardenCoreCodec, data, registration); err != nil {
+func LoadControllerRegistration(r io.Reader) ([]runtime.Object, error) {
+
+	var list []runtime.Object
+
+	d := yaml.NewYAMLToJSONDecoder(r)
+	ext := runtime.RawExtension{}
+	err := d.Decode(&ext)
+	if err != nil {
 		return nil, err
 	}
+	obj, _, err := unstructured.UnstructuredJSONScheme.Decode(ext.Raw, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	list = append(list, obj)
 
-	return registration, nil
+	err = d.Decode(&ext)
+	if err != nil && err != io.EOF {
+		return nil, err
+	} else {
+		obj, _, err = unstructured.UnstructuredJSONScheme.Decode(ext.Raw, nil, nil)
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, obj)
+	}
+
+	return list, nil
 }
