@@ -185,12 +185,6 @@ func (g *gem) Repository(repositoryName string) (RepositoryInterface, error) {
 	return &repositoryInterface{targetSolver: g.targetSolverFactory.New(repo), repository: repo}, nil
 }
 
-const (
-	moduleKeyField   = "moduleKey"
-	requirementField = "requirement"
-	lockField        = "lock"
-)
-
 func withUpdateLogger(log logrus.FieldLogger, update bool) logrus.FieldLogger {
 	return log.WithField("update", update)
 }
