@@ -15,10 +15,9 @@
 package gem
 
 import (
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 	"io"
 	"net/url"
-
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
 
 	"github.com/Masterminds/semver"
 	"gopkg.in/src-d/go-git.v4"
