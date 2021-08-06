@@ -15,7 +15,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	gemcmd "github.com/gardener/gem/pkg/cmd"
@@ -26,7 +25,6 @@ import (
 
 func main() {
 	if err := cmd.Command(gem.Default, gemcmd.OsStreams).Execute(); err != nil {
-		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
 }
