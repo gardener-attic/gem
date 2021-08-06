@@ -210,13 +210,13 @@ func (g *gem) Solve(requirements *gemapi.Requirements) (*gemapi.Locks, error) {
 		log.Debug("Retrieving repository")
 		repositoryInterface, err := g.Repository(moduleKey.Repository)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("could not retrieve repository %q: %w", &moduleKey, err)
 		}
 
 		log.Debug("Solving requirement")
 		lock, err := repositoryInterface.Solve(moduleKey.Submodule, requirement)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("could not solve requirement %q for extension %q: %w", &requirement.Target, &moduleKey, err)
 		}
 
 		log = withLockLogger(log, lock)
@@ -237,19 +237,19 @@ func (g *gem) Fetch(requirements *gemapi.Requirements, locks *gemapi.Locks) ([]r
 		log.Debug("Retrieving repository")
 		repositoryInterface, err := g.Repository(moduleKey.Repository)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("could not retrieve repository %q: %w", &moduleKey, err)
 		}
 
-		log.Debug("Checking whether lock for is present")
+		log.Debug("Checking whether lock is present")
 		lock, ok := locks.Locks[moduleKey]
 		if !ok {
-			return nil, fmt.Errorf("no lock recorded for %s", moduleKey)
+			return nil, fmt.Errorf("no lock recorded for %q", &moduleKey)
 		}
 
 		log.Debug("Fetching controller installation")
 		registration, err := repositoryInterface.Fetch(moduleKey.Submodule, requirement, lock)
 		if err != nil {
-			return nil, errors.Wrapf(err, "could not fetch registration for %s", &moduleKey)
+			return nil, errors.Wrapf(err, "could not fetch registration for %q", &moduleKey)
 		}
 
 		log.Info("Successfully fetched")
@@ -269,7 +269,7 @@ func (g *gem) Ensure(requirements *gemapi.Requirements, locks *gemapi.Locks, upd
 		log.Debug("Retrieving repository")
 		repositoryInterface, err := g.Repository(moduleKey.Repository)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("could not retrieve repository %q: %w", &moduleKey, err)
 		}
 
 		log.Debug("Checking for old lock")
@@ -285,7 +285,7 @@ func (g *gem) Ensure(requirements *gemapi.Requirements, locks *gemapi.Locks, upd
 		log.Debug("Ensuring requirement with optional lock")
 		lock, err := repositoryInterface.Ensure(moduleKey.Submodule, requirement, oldLock, update)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("could not ensure requirement %q for repository %q: %w", requirement, &moduleKey, err)
 		}
 
 		log = withLockLogger(log, lock)
