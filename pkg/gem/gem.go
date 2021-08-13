@@ -16,6 +16,7 @@ package gem
 
 import (
 	"fmt"
+	"k8s.io/apimachinery/pkg/runtime"
 	"path/filepath"
 
 	"github.com/Masterminds/semver"
@@ -23,8 +24,6 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/pkg/errors"
-
-	gardencorev1beta1 "github.com/gardener/gardener/pkg/apis/core/v1beta1"
 
 	gemapi "github.com/gardener/gem/pkg/gem/api"
 )
@@ -157,7 +156,7 @@ func (r *repositoryInterface) Ensure(submodule string, requirement *gemapi.Requi
 	return lock, nil
 }
 
-func (r *repositoryInterface) Fetch(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock) (*gardencorev1beta1.ControllerRegistration, error) {
+func (r *repositoryInterface) Fetch(submodule string, requirement *gemapi.Requirement, lock *gemapi.Lock) ([]runtime.Object, error) {
 	path := optSubmodulePath(submodule, requirement.Filename)
 	data, err := r.repository.File(lock.Hash, path)
 	if err != nil {
@@ -234,8 +233,8 @@ func (g *gem) Solve(requirements *gemapi.Requirements) (*gemapi.Locks, error) {
 	return &gemapi.Locks{Locks: locks}, nil
 }
 
-func (g *gem) Fetch(requirements *gemapi.Requirements, locks *gemapi.Locks) ([]*gardencorev1beta1.ControllerRegistration, error) {
-	var registrations []*gardencorev1beta1.ControllerRegistration
+func (g *gem) Fetch(requirements *gemapi.Requirements, locks *gemapi.Locks) ([]runtime.Object, error) {
+	var registrations []runtime.Object
 
 	for moduleKey, requirement := range requirements.Requirements {
 		log := withModuleKeyRequirementLogger(g.log, moduleKey, requirement)
@@ -260,7 +259,7 @@ func (g *gem) Fetch(requirements *gemapi.Requirements, locks *gemapi.Locks) ([]*
 		}
 
 		log.Info("Successfully fetched")
-		registrations = append(registrations, registration)
+		registrations = append(registrations, registration...)
 	}
 
 	return registrations, nil

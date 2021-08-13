@@ -14,6 +14,8 @@
 
 package gem
 
+import "io"
+
 type fileKey struct {
 	hash string
 	path string
@@ -97,7 +99,7 @@ func (c *cachingRepository) Latest() (string, error) {
 	return latest, nil
 }
 
-func (c *cachingRepository) File(hash, path string) ([]byte, error) {
+func (c *cachingRepository) File(hash, path string) (io.Reader, error) {
 	return c.repository.File(hash, path)
 }
 

@@ -15,6 +15,7 @@
 package gem
 
 import (
+	"io"
 	"net/url"
 
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
@@ -121,18 +122,18 @@ func (g *gitRepository) fileObject(hash, path string) (*object.File, error) {
 	return commit.File(path)
 }
 
-func (g *gitRepository) File(hash, path string) ([]byte, error) {
+func (g *gitRepository) File(hash, path string) (io.Reader, error) {
 	file, err := g.fileObject(hash, path)
 	if err != nil {
 		return nil, err
 	}
 
-	contents, err := file.Contents()
+	r, err := file.Reader()
 	if err != nil {
 		return nil, err
 	}
 
-	return []byte(contents), nil
+	return r, nil
 }
 
 func (g *gitRepository) HasFile(hash, path string) (bool, error) {

@@ -18,11 +18,10 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"k8s.io/apimachinery/pkg/runtime"
 	"os"
 
 	gemv1alpha1 "github.com/gardener/gem/pkg/gem/api/v1alpha1"
-
-	gardencorev1beta1 "github.com/gardener/gardener/pkg/apis/core/v1beta1"
 
 	gemioutil "github.com/gardener/gem/pkg/util/io"
 
@@ -115,7 +114,7 @@ func WriteLocksIntoFileOrWriteCloser(locks *gemapi.Locks, filename string, wc io
 	return gem.WriteLocksInto(locks, wc)
 }
 
-func WriteControllerRegistrationsInto(registrations []*gardencorev1beta1.ControllerRegistration, w io.Writer) error {
+func WriteControllerRegistrationsInto(registrations []runtime.Object, w io.Writer) error {
 	for i, registration := range registrations {
 		if i != 0 {
 			if _, err := fmt.Fprint(w, "---"); err != nil {
@@ -134,7 +133,7 @@ func WriteControllerRegistrationsInto(registrations []*gardencorev1beta1.Control
 	return nil
 }
 
-func WriteControllerRegistrationsIntoFileOrWriteCloser(registrations []*gardencorev1beta1.ControllerRegistration, filename string, wc io.WriteCloser) error {
+func WriteControllerRegistrationsIntoFileOrWriteCloser(registrations []runtime.Object, filename string, wc io.WriteCloser) error {
 	wc, err := FileOrWriteCloser(filename, wc)
 	if err != nil {
 		return err
