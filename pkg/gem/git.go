@@ -15,10 +15,9 @@
 package gem
 
 import (
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 	"io"
 	"net/url"
-
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
 
 	"github.com/Masterminds/semver"
 	"gopkg.in/src-d/go-git.v4"
@@ -69,7 +68,7 @@ func (g *gitRepository) Revision(name string) (string, error) {
 }
 
 func (g *gitRepository) Branch(name string) (string, error) {
-	ref, err := g.repo.Reference(plumbing.NewBranchReferenceName(name), true)
+	ref, err := g.repo.Reference(plumbing.NewRemoteReferenceName("origin", name), true)
 	if err != nil {
 		return "", err
 	}
