@@ -38,6 +38,7 @@ func Command(g gem.Interface, streams *gemcmd.Streams) *cobra.Command {
 			gem.DefaultLogger.SetLevel(logLevel)
 			return nil
 		},
+		SilenceUsage: true,
 	}
 
 	cmd.PersistentFlags().StringVarP(&level, gemcmd.DefaultLogLevelFlag, gemcmd.DefaultLogLevelFlagP, gemcmd.DefaultLogLevel, gemcmd.DefaultLogLevelUsage)
